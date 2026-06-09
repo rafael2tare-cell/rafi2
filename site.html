@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="ro" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mosimo Bistro</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=DM+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            carbon: '#111111',
+            cream: '#F5F1EA',
+            sage: '#2F4A3E',
+            gold: '#C6A15B',
+            warmgray: '#A8A8A8'
+          },
+          fontFamily: {
+            serif: ['Playfair Display', 'serif'],
+            sans: ['DM Sans', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    .app-wrapper { height: 100%; overflow-y: auto; overflow-x: hidden; }
+    .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .menu-card:hover { transform: translateY(-4px) scale(1.02); }
+    .menu-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .gold-btn { transition: all 0.3s ease; }
+    .gold-btn:hover { background: #C6A15B; color: #111; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(198,161,91,0.3); }
+    .parallax-hero { background: linear-gradient(135deg, #111 0%, #2F4A3E 50%, #111 100%); background-size: 200% 200%; animation: gradShift 12s ease infinite; }
+    @keyframes gradShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+    .gallery-item:hover img { transform: scale(1.1); }
+    .gallery-item img { transition: transform 0.5s ease; }
+    .service-card:hover { border-color: #C6A15B; transform: translateY(-3px); }
+    .service-card { transition: all 0.3s ease; }
+    .nav-link { position: relative; }
+    .nav-link::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px; background:#C6A15B; transition:width 0.3s; }
+    .nav-link:hover::after { width:100%; }
+    .category-btn.active { background:#C6A15B; color:#111; }
+    .loading-screen { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; background:#111; transition: opacity 0.6s ease; }
+    .loading-screen.hide { opacity:0; pointer-events:none; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ <script src="/_sdk/telemetry_sdk.js"></script></head>
+ <body class="h-full bg-carbon font-sans text-cream">
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loader">
+   <div class="text-center">
+    <h1 class="font-serif text-4xl text-gold animate-pulse">Mosimo Bistro</h1>
+    <p class="text-warmgray mt-2 text-sm tracking-widest uppercase">Loading experience...</p>
+   </div>
+  </div>
+  <div class="app-wrapper" id="app">
+   <!-- Navigation -->
+   <nav class="fixed top-0 left-0 right-0 z-50 bg-carbon/90 backdrop-blur-md border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+     <a href="#hero" class="font-serif text-2xl text-gold">Mosimo</a>
+     <div class="hidden md:flex gap-8 text-sm tracking-wide">
+      <a href="#about" class="nav-link text-cream/80 hover:text-cream">Despre</a> <a href="#menu" class="nav-link text-cream/80 hover:text-cream">Meniu</a> <a href="#gallery" class="nav-link text-cream/80 hover:text-cream">Galerie</a> <a href="#reserve" class="nav-link text-cream/80 hover:text-cream">Rezervări</a> <a href="#contact" class="nav-link text-cream/80 hover:text-cream">Contact</a>
+     </div><button id="mobileToggle" class="md:hidden text-cream"><i data-lucide="menu"></i></button>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden px-6 pb-4 flex flex-col gap-3 text-sm">
+     <a href="#about" class="text-cream/80">Despre</a> <a href="#menu" class="text-cream/80">Meniu</a> <a href="#gallery" class="text-cream/80">Galerie</a> <a href="#reserve" class="text-cream/80">Rezervări</a> <a href="#contact" class="text-cream/80">Contact</a>
+    </div>
+   </nav><!-- Hero -->
+   <section id="hero" class="parallax-hero relative flex items-center justify-center text-center" style="min-height:100%;">
+    <div class="absolute inset-0 bg-carbon/40"></div>
+    <div class="relative z-10 px-6 max-w-3xl">
+     <p class="text-gold text-sm tracking-[0.3em] uppercase mb-4 fade-in">București</p>
+     <h1 id="heroTitle" class="font-serif text-5xl md:text-7xl font-bold leading-tight mb-4 fade-in">Mosimo Bistro</h1>
+     <p id="heroSubtitle" class="font-serif text-xl md:text-2xl italic text-cream/80 mb-2 fade-in">Modern Mediterranean Experience</p>
+     <p class="text-warmgray text-sm mb-8 fade-in">Gastronomie urbană contemporană</p>
+     <div class="flex flex-wrap justify-center gap-4 fade-in">
+      <a href="#menu" class="gold-btn border border-gold text-gold px-6 py-3 text-sm tracking-wide rounded">Vezi meniul</a> <a href="#reserve" class="gold-btn bg-gold text-carbon px-6 py-3 text-sm tracking-wide rounded font-medium">Rezervă o masă</a> <a href="#menu" class="gold-btn border border-warmgray/30 text-warmgray px-6 py-3 text-sm tracking-wide rounded">Comandă online</a>
+     </div>
+    </div>
+   </section><!-- About -->
+   <section id="about" class="py-24 px-6">
+    <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+     <div class="fade-in">
+      <p class="text-gold text-sm tracking-[0.2em] uppercase mb-3">Despre noi</p>
+      <h2 class="font-serif text-4xl mb-6">Povestea<br><span class="italic text-gold">Mosimo</span></h2>
+      <p id="aboutText" class="text-warmgray leading-relaxed mb-6">Mosimo Bistro este un restaurant modern din București, care combină bucătăria mediteraneană reinterpretată cu o atmosferă urbană elegantă. Din 2026, restaurantul este condus de o echipă tânără, pasionată de gastronomie, plating modern și experiențe culinare de calitate.</p>
+      <div class="flex items-center gap-4">
+       <div class="flex text-gold text-lg">
+        ★★★★<span class="text-warmgray/50">★</span>
+       </div><span class="text-sm text-warmgray">4.4 / 5 — 510+ review-uri</span>
+      </div>
+     </div>
+     <div class="fade-in relative">
+      <div class="aspect-[4/5] rounded-2xl bg-gradient-to-br from-sage/30 to-carbon border border-white/5 flex items-center justify-center">
+       <div class="text-center">
+        <div class="text-6xl mb-4">
+         🍷
+        </div>
+        <p class="font-serif text-xl italic text-gold">Est. 2026</p>
+        <p class="text-warmgray text-sm mt-1">Cozy Urban Premium</p>
+       </div>
+      </div>
+      <div class="absolute -bottom-4 -right-4 w-24 h-24 border border-gold/30 rounded-xl"></div>
+     </div>
+    </div>
+   </section><!-- Menu -->
+   <section id="menu" class="py-24 px-6 bg-carbon">
+    <div class="max-w-6xl mx-auto">
+     <div class="text-center mb-12 fade-in">
+      <p class="text-gold text-sm tracking-[0.2em] uppercase mb-3">Descoperă</p>
+      <h2 class="font-serif text-4xl">Meniul <span class="italic">Nostru</span></h2>
+     </div>
+     <div class="flex flex-wrap justify-center gap-3 mb-12 fade-in" id="menuFilters">
+      <button class="category-btn active px-4 py-2 rounded-full text-sm border border-gold/30 text-cream/80 transition" data-cat="all">Toate</button> <button class="category-btn px-4 py-2 rounded-full text-sm border border-gold/30 text-cream/80 transition" data-cat="breakfast">Breakfast</button> <button class="category-btn px-4 py-2 rounded-full text-sm border border-gold/30 text-cream/80 transition" data-cat="main">Main</button> <button class="category-btn px-4 py-2 rounded-full text-sm border border-gold/30 text-cream/80 transition" data-cat="burgers">Burgers</button> <button class="category-btn px-4 py-2 rounded-full text-sm border border-gold/30 text-cream/80 transition" data-cat="paste">Paste</button> <button class="category-btn px-4 py-2 rounded-full text-sm border border-gold/30 text-cream/80 transition" data-cat="desert">Deserturi</button> <button class="category-btn px-4 py-2 rounded-full text-sm border border-gold/30 text-cream/80 transition" data-cat="drinks">Băuturi</button>
+     </div>
+     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="menuGrid"></div>
+    </div>
+   </section><!-- Services -->
+   <section class="py-24 px-6">
+    <div class="max-w-4xl mx-auto text-center fade-in">
+     <p class="text-gold text-sm tracking-[0.2em] uppercase mb-3">Experiență</p>
+     <h2 class="font-serif text-4xl mb-12">Cum ne <span class="italic">savurezi</span></h2>
+     <div class="grid md:grid-cols-3 gap-8">
+      <div class="service-card border border-white/10 rounded-2xl p-8 cursor-pointer">
+       <div class="text-4xl mb-4">
+        🍽
+       </div>
+       <h3 class="font-serif text-xl mb-2">Dine-in</h3>
+       <p class="text-warmgray text-sm">Atmosferă premium, plating artistic</p>
+      </div>
+      <div class="service-card border border-white/10 rounded-2xl p-8 cursor-pointer">
+       <div class="text-4xl mb-4">
+        📦
+       </div>
+       <h3 class="font-serif text-xl mb-2">Takeaway</h3>
+       <p class="text-warmgray text-sm">Aceeași calitate, la pachet</p>
+      </div>
+      <div class="service-card border border-white/10 rounded-2xl p-8 cursor-pointer">
+       <div class="text-4xl mb-4">
+        🚗
+       </div>
+       <h3 class="font-serif text-xl mb-2">Delivery</h3>
+       <p class="text-warmgray text-sm">Direct la ușa ta, rapid</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Gallery -->
+   <section id="gallery" class="py-24 px-6 bg-sage/10">
+    <div class="max-w-6xl mx-auto">
+     <div class="text-center mb-12 fade-in">
+      <p class="text-gold text-sm tracking-[0.2em] uppercase mb-3">Vizual</p>
+      <h2 class="font-serif text-4xl">Galerie</h2>
+     </div>
+     <div class="grid grid-cols-2 md:grid-cols-3 gap-4 fade-in">
+      <div class="gallery-item rounded-xl overflow-hidden aspect-square bg-gradient-to-br from-sage/40 to-carbon flex items-center justify-center cursor-pointer group"><img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&amp;h=500&amp;fit=crop" alt="Restaurant" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.style.background='#2F4A3E'; this.style.display='none';">
+      </div>
+      <div class="gallery-item rounded-xl overflow-hidden aspect-[4/5] bg-gradient-to-br from-gold/20 to-carbon flex items-center justify-center cursor-pointer group md:row-span-2"><img src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&amp;h=500&amp;fit=crop" alt="Pasta" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.style.background='#2F4A3E'; this.style.display='none';">
+      </div>
+      <div class="gallery-item rounded-xl overflow-hidden aspect-square bg-gradient-to-br from-sage/30 to-carbon flex items-center justify-center cursor-pointer group"><img src="https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=500&amp;h=500&amp;fit=crop" alt="Cocktail" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.style.background='#2F4A3E'; this.style.display='none';">
+      </div>
+      <div class="gallery-item rounded-xl overflow-hidden aspect-square bg-gradient-to-br from-gold/10 to-carbon flex items-center justify-center cursor-pointer group"><img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=500&amp;h=500&amp;fit=crop" alt="Dessert" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.style.background='#2F4A3E'; this.style.display='none';">
+      </div>
+      <div class="gallery-item rounded-xl overflow-hidden aspect-square bg-gradient-to-br from-sage/20 to-carbon flex items-center justify-center cursor-pointer group"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&amp;h=500&amp;fit=crop" alt="Burger" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.style.background='#2F4A3E'; this.style.display='none';">
+      </div>
+     </div>
+    </div>
+   </section><!-- Reservation -->
+   <section id="reserve" class="py-24 px-6">
+    <div class="max-w-xl mx-auto text-center fade-in">
+     <p class="text-gold text-sm tracking-[0.2em] uppercase mb-3">Rezervări</p>
+     <h2 class="font-serif text-4xl mb-8">Rezervă o <span class="italic">masă</span></h2>
+     <form id="reserveForm" class="space-y-4 text-left">
+      <div class="grid grid-cols-2 gap-4">
+       <div>
+        <label for="rName" class="text-xs text-warmgray uppercase tracking-wide">Nume</label> <input id="rName" type="text" class="w-full mt-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-cream focus:border-gold focus:outline-none transition" placeholder="Ion Popescu">
+       </div>
+       <div>
+        <label for="rPhone" class="text-xs text-warmgray uppercase tracking-wide">Telefon</label> <input id="rPhone" type="tel" class="w-full mt-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-cream focus:border-gold focus:outline-none transition" placeholder="07xx xxx xxx">
+       </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+       <div>
+        <label for="rDate" class="text-xs text-warmgray uppercase tracking-wide">Data</label> <input id="rDate" type="date" class="w-full mt-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-cream focus:border-gold focus:outline-none transition">
+       </div>
+       <div>
+        <label for="rGuests" class="text-xs text-warmgray uppercase tracking-wide">Persoane</label> <select id="rGuests" class="w-full mt-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-cream focus:border-gold focus:outline-none transition"> <option value="2">2 persoane</option> <option value="3">3 persoane</option> <option value="4">4 persoane</option> <option value="5">5 persoane</option> <option value="6">6+ persoane</option> </select>
+       </div>
+      </div><button type="submit" class="gold-btn w-full bg-gold text-carbon py-4 rounded-lg font-medium tracking-wide text-sm mt-4">Find a table</button>
+     </form>
+     <p id="reserveMsg" class="mt-4 text-sm text-gold hidden">✓ Rezervare trimisă cu succes!</p>
+    </div>
+   </section><!-- Contact -->
+   <section id="contact" class="py-24 px-6 bg-sage/10">
+    <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-12 fade-in">
+     <div>
+      <p class="text-gold text-sm tracking-[0.2em] uppercase mb-3">Contact</p>
+      <h2 class="font-serif text-3xl mb-6">Vino la noi</h2>
+      <div class="space-y-4 text-warmgray">
+       <div class="flex items-start gap-3"><i data-lucide="map-pin" class="w-5 h-5 text-gold mt-0.5"></i><span>Strada Ionescu Gheorghe 22B, București</span>
+       </div>
+       <div class="flex items-center gap-3"><i data-lucide="phone" class="w-5 h-5 text-gold"></i><span>0770 229 862</span>
+       </div>
+       <div class="flex items-center gap-3"><i data-lucide="clock" class="w-5 h-5 text-gold"></i><span>Deschis zilnic de la 12:00</span>
+       </div>
+      </div>
+     </div>
+     <div class="rounded-2xl overflow-hidden border border-white/10 aspect-video bg-gradient-to-br from-sage/20 to-carbon flex items-center justify-center">
+      <div class="text-center">
+       <i data-lucide="map" class="w-12 h-12 text-gold mx-auto mb-2"></i>
+       <p class="text-warmgray text-sm">București, Sector 3</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Footer -->
+   <footer class="py-8 px-6 border-t border-white/5 text-center">
+    <p class="font-serif text-gold text-lg">Mosimo Bistro</p>
+    <p class="text-warmgray text-xs mt-2">© 2026 Mosimo Bistro. All rights reserved.</p>
+   </footer>
+  </div>
+  <script>
+// Menu data with images
+const menuItems = [
+  {cat:'breakfast',name:'Poached Eggs',desc:'Jambon & sos olandez',price:39,img:'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=500&h=400&fit=crop'},
+  {cat:'breakfast',name:'Snowy White Omelette',desc:'Feta & spanac',price:34,img:'https://images.unsplash.com/photo-1585521537172-b48f86b6ddff?w=500&h=400&fit=crop'},
+  {cat:'breakfast',name:'Croque Monsieur',desc:'Classic french',price:36,img:'https://images.unsplash.com/photo-1589985591413-07d7cb41d8de?w=500&h=400&fit=crop'},
+  {cat:'breakfast',name:'Shakshouka',desc:'Cu feta',price:48,img:'https://images.unsplash.com/photo-1567521464027-f127ff144326?w=500&h=400&fit=crop'},
+  {cat:'breakfast',name:'Balkan Breakfast',desc:'Traditional reimaginat',price:46,img:'https://images.unsplash.com/photo-1495633541710-36a500fe3ee0?w=500&h=400&fit=crop'},
+  {cat:'main',name:'Pork Cheeks',desc:'Piure & baby morcovi',price:59,img:'https://images.unsplash.com/photo-1555939594-58d7cb561ae1?w=500&h=400&fit=crop'},
+  {cat:'main',name:'BBQ Pork Ribs',desc:'Slow-cooked 8h',price:79,img:'https://images.unsplash.com/photo-1555939594-51e1d5787ff5?w=500&h=400&fit=crop'},
+  {cat:'main',name:'Beef Bone Marrow',desc:'Salsa & jalapeño',price:75,img:'https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=500&h=400&fit=crop'},
+  {cat:'main',name:'Roasted Beef',desc:'Piure de păstârnac',price:120,img:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=400&fit=crop'},
+  {cat:'main',name:'Sea Bass',desc:'Sweet potato',price:89,img:'https://images.unsplash.com/photo-1553909092-d5f91566f8d5?w=500&h=400&fit=crop'},
+  {cat:'burgers',name:'Beef Burger',desc:'Cartofi & aioli',price:65,img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&h=400&fit=crop'},
+  {cat:'burgers',name:'Halloumi Burger',desc:'Vegetarian premium',price:62,img:'https://images.unsplash.com/photo-1571407970349-bc4e5c0eb254?w=500&h=400&fit=crop'},
+  {cat:'burgers',name:'Cheeseburger Premium',desc:'Double cheese',price:68,img:'https://images.unsplash.com/photo-1550547990-294e4daf85d2?w=500&h=400&fit=crop'},
+  {cat:'burgers',name:'Angus Burger',desc:'Premium cut',price:72,img:'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=500&h=400&fit=crop'},
+  {cat:'paste',name:'Carbonara',desc:'Classic romana',price:55,img:'https://images.unsplash.com/photo-1612874742237-415c69f18133?w=500&h=400&fit=crop'},
+  {cat:'paste',name:'Quattro Formaggi',desc:'4 brânzeturi',price:58,img:'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=500&h=400&fit=crop'},
+  {cat:'paste',name:'Paste cu Trufe',desc:'Trufe negre',price:75,img:'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=500&h=400&fit=crop'},
+  {cat:'paste',name:'Arrabiata',desc:'Picantă',price:49,img:'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=500&h=400&fit=crop'},
+  {cat:'desert',name:'Tiramisu',desc:'Classic italian',price:32,img:'https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=500&h=400&fit=crop'},
+  {cat:'desert',name:'Lava Cake',desc:'Ciocolată fondantă',price:38,img:'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&h=400&fit=crop'},
+  {cat:'desert',name:'Milk Pudding',desc:'Floating Islands',price:30,img:'https://images.unsplash.com/photo-1488477181946-85a2138d547d?w=500&h=400&fit=crop'},
+  {cat:'drinks',name:'Daquiri',desc:'Signature cocktail',price:42,img:'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=500&h=400&fit=crop'},
+  {cat:'drinks',name:'Disaronno Sour',desc:'Amaretto blend',price:45,img:'https://images.unsplash.com/photo-1536880201940-7e0fbd2e4b1e?w=500&h=400&fit=crop'},
+  {cat:'drinks',name:'Mango Spice',desc:'Exotic & fresh',price:38,img:'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=500&h=400&fit=crop'},
+];
+
+const menuGrid = document.getElementById('menuGrid');
+let activeCategory = 'all';
+
+function renderMenu(cat) {
+  const items = cat === 'all' ? menuItems : menuItems.filter(i => i.cat === cat);
+  menuGrid.innerHTML = items.map(i => `
+    <div class="menu-card bg-white/5 border border-white/10 rounded-xl overflow-hidden cursor-pointer group">
+      <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-sage/40 to-carbon">
+        <img src="${i.img}" alt="${i.name}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.style.background='#2F4A3E'; this.style.display='none';">
+        <div class="absolute inset-0 bg-carbon/30 group-hover:bg-carbon/10 transition-colors duration-300"></div>
+      </div>
+      <div class="p-5">
+        <div class="flex justify-between items-start mb-3">
+          <span class="text-gold text-sm font-medium tracking-wide">PREMIUM</span>
+          <span class="text-gold font-medium">${i.price} lei</span>
+        </div>
+        <h3 class="font-serif text-lg mb-1 group-hover:text-gold transition-colors">${i.name}</h3>
+        <p class="text-warmgray text-sm">${i.desc}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('menuFilters').addEventListener('click', e => {
+  const btn = e.target.closest('[data-cat]');
+  if (!btn) return;
+  document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeCategory = btn.dataset.cat;
+  renderMenu(activeCategory);
+});
+
+renderMenu('all');
+
+// Reserve form
+document.getElementById('reserveForm').addEventListener('submit', e => {
+  e.preventDefault();
+  document.getElementById('reserveMsg').classList.remove('hidden');
+  e.target.reset();
+  setTimeout(() => document.getElementById('reserveMsg').classList.add('hidden'), 4000);
+});
+
+// Mobile menu
+document.getElementById('mobileToggle').addEventListener('click', () => {
+  document.getElementById('mobileMenu').classList.toggle('hidden');
+});
+
+// Scroll animations
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Loading screen
+setTimeout(() => document.getElementById('loader').classList.add('hide'), 1200);
+
+// Lucide
+lucide.createIcons();
+
+// Element SDK
+const defaultConfig = {
+  hero_title: 'Mosimo Bistro',
+  hero_subtitle: 'Modern Mediterranean Experience',
+  about_text: 'Mosimo Bistro este un restaurant modern din București, care combină bucătăria mediteraneană reinterpretată cu o atmosferă urbană elegantă. Din 2026, restaurantul este condus de o echipă tânără, pasionată de gastronomie, plating modern și experiențe culinare de calitate.',
+  background_color: '#111111',
+  surface_color: '#2F4A3E',
+  text_color: '#F5F1EA',
+  primary_action_color: '#C6A15B',
+  secondary_action_color: '#A8A8A8',
+  font_family: 'Playfair Display',
+  font_size: 16
+};
+
+function applyConfig(config) {
+  document.getElementById('heroTitle').textContent = config.hero_title || defaultConfig.hero_title;
+  document.getElementById('heroSubtitle').textContent = config.hero_subtitle || defaultConfig.hero_subtitle;
+  document.getElementById('aboutText').textContent = config.about_text || defaultConfig.about_text;
+
+  const root = document.documentElement;
+  root.style.setProperty('--bg', config.background_color || defaultConfig.background_color);
+  root.style.setProperty('--gold', config.primary_action_color || defaultConfig.primary_action_color);
+
+  const baseSize = config.font_size || defaultConfig.font_size;
+  const font = config.font_family || defaultConfig.font_family;
+  document.querySelectorAll('.font-serif').forEach(el => {
+    el.style.fontFamily = `${font}, serif`;
+  });
+  document.getElementById('heroTitle').style.fontSize = `${baseSize * 3.5}px`;
+  document.getElementById('heroSubtitle').style.fontSize = `${baseSize * 1.4}px`;
+}
+
+window.elementSdk.init({
+  defaultConfig,
+  onConfigChange: async (config) => applyConfig(config),
+  mapToCapabilities: (config) => ({
+    recolorables: [
+      { get: () => config.background_color || defaultConfig.background_color, set: v => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+      { get: () => config.surface_color || defaultConfig.surface_color, set: v => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+      { get: () => config.text_color || defaultConfig.text_color, set: v => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+      { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: v => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+      { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: v => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } },
+    ],
+    borderables: [],
+    fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: v => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); } },
+    fontSizeable: { get: () => config.font_size || defaultConfig.font_size, set: v => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); } },
+  }),
+  mapToEditPanelValues: (config) => new Map([
+    ['hero_title', config.hero_title || defaultConfig.hero_title],
+    ['hero_subtitle', config.hero_subtitle || defaultConfig.hero_subtitle],
+    ['about_text', config.about_text || defaultConfig.about_text],
+  ])
+});
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a093f1c2ce554d79',t:'MTc4MTA0ODAzOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
